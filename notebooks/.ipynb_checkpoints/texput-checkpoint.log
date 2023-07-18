@@ -1,0 +1,21 @@
+This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/Debian) (preloaded format=xelatex 2023.7.18)  18 JUL 2023 12:48
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**pdflatex
+
+! Emergency stop.
+<*> pdflatex
+            
+End of file on the terminal!
+
+ 
+Here is how much of TeX's memory you used:
+ 2 strings out of 479236
+ 18 string characters out of 5875835
+ 275568 words of memory out of 5000000
+ 19662 multiletter control sequences out of 15000+600000
+ 403430 words of font info for 27 fonts, out of 8000000 for 9000
+ 14 hyphenation exceptions out of 8191
+ 0i,0n,0p,11b,6s stack positions out of 5000i,500n,10000p,200000b,80000s
+No pages of output.

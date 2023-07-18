@@ -1,0 +1,5 @@
+*.bat
+*.cmd
+*.sh
+
+dockerfile.test

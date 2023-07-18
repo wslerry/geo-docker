@@ -1,0 +1,13 @@
+{
+  "shell_port": 55313,
+  "iopub_port": 38467,
+  "stdin_port": 55545,
+  "control_port": 38109,
+  "hb_port": 32851,
+  "ip": "127.0.0.1",
+  "key": "40d5faae-62700920416d7f70b1c925af",
+  "transport": "tcp",
+  "signature_scheme": "hmac-sha256",
+  "kernel_name": "python3",
+  "jupyter_session": "/opt/notebooks/geemap_example.ipynb"
+}

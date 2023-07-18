@@ -1,0 +1,12 @@
+*.md
+Dockerfile
+dockerfile.test
+.dockerignore
+*/temp*
+*/*/temp*
+temp?
+*/.git*
+*/*/.git*
+.git?
+*.bat
+*.sh
