@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  python:
+    container_name: geodocker
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8888:8888
+    restart: on-failure
+    volumes:
+      - ./notebooks:/opt/notebooks
