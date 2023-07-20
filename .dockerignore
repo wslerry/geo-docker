@@ -10,3 +10,5 @@ temp?
 .git?
 *.bat
 *.sh
+./data
+./notebooks

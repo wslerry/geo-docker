@@ -3,3 +3,10 @@
 *.sh
 
 dockerfile.test
+./notebooks/.ipynb_checkpoints
+./notebooks/.local
+./notebooks/.jupyter
+./notebooks/.ipython
+./notebooks/.config
+
+./**/**/.ipynb_checkpoints
