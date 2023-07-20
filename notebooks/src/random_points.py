@@ -74,6 +74,6 @@ class RandomPointsInBounds:
             self.pts.to_file(self.outfile, driver='GeoJSON')
             print(msg)
         else:
-            print(f"[WARNING]\tFile extension not supported, continue to plot...")
+            print(f"[WARNING]\tFile extension not supported")
             pass
         return
