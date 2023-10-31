@@ -52,6 +52,7 @@ RUN set -eux \
         shapely \
         rtree \
         geopy \
+		tqdm \
         matplotlib \
         descartes \
         jupyterlab \
