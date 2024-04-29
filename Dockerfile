@@ -21,7 +21,8 @@ RUN set -eux \
     gcc g++ \
     gdal-data \
     gdal-bin \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+	&& apt-get autoremove
 
 ENV PROJ_DIR=/usr
 ENV PROJ_LIBDIR=/usr/lib
@@ -46,6 +47,7 @@ RUN set -eux \
         pyproj \
         shapely \
         rtree \
+		tqdm \
         geopy \
         matplotlib \
         descartes \
