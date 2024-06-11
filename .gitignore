@@ -3,14 +3,10 @@
 *.sh
 
 dockerfile.test
+data
 backup
 notebooks_backup
 notebooks
-./notebooks/.ipynb_checkpoints
-./notebooks/.local
-./notebooks/.jupyter
-./notebooks/.ipython
-./notebooks/.config
 
 src/
 src
