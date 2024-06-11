@@ -2,52 +2,81 @@ FROM python:3.8.17-slim-bullseye
 
 LABEL maintainer="Lerry William Seling"
 
-#install
+# Set environment variables for non-interactive installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies and clean up
 RUN set -eux \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
-        gcc g++ \
+        gcc \
+        g++ \
         build-essential \
+        wget \
+        perl \
+        tar \
+        gzip \
         libgdal-dev \
         libproj-dev \
         libgeos-dev \
-    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-    && rm -rf /var/lib/apt/lists/*
+        gdal-data \
+        gdal-bin \
+        pandoc \
+    && apt clean \
+    && apt autoremove \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN set -eux \
-    && apt-get update \
-    && apt-get remove -y binutils \
-    && apt-get install -y --no-install-recommends \
-    gcc g++ \
-    gdal-data \
-    gdal-bin \
-    && rm -rf /var/lib/apt/lists/* \
-	&& apt-get autoremove
+# Install latex
+WORKDIR /tmp
 
+# Download and extract TeX Live installer
+RUN set -eux && wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz \
+    && tar -xzvf install-tl-unx.tar.gz \
+    && cd install-tl-* \
+    && perl ./install-tl --no-interaction --scheme=small --no-doc-install --no-src-install --lang=en
+
+# Set TeX Live binary path
+ENV PATH="/usr/local/texlive/2024/bin/x86_64-linux:$PATH"
+
+# Install additional TeX packages using tlmgr
+RUN set -eux && tlmgr install adjustbox caption collectbox enumitem environ eurosym etoolbox jknapltx parskip \
+    pdfcol pgf rsfs tcolorbox titling trimspaces ucs ulem upquote \
+    ltxcmds infwarerr iftex kvoptions kvsetkeys float geometry amsmath fontspec \
+    unicode-math fancyvrb grffile hyperref booktabs soul ec \
+    && rm -rf /tmp/* \
+    && tex --version && tlmgr list --only-installed
+
+# Set environment variables
 ENV PROJ_DIR=/usr
 ENV PROJ_LIBDIR=/usr/lib
 ENV PROJ_INCDIR=/usr/include
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
 ENV C_INCLUDE_PATH=/usr/include/gdal
 
-# ENV GDAL_VERSION=$(gdal-config --version)
+# Add user 'geo' and set home directory
+RUN useradd -m -s /bin/bash geo
 
-# install gdal, geopandas and jupyterlab
+# Install pip packages as the 'geo' user
+USER geo
+WORKDIR /home/geo
+ENV PATH=/home/geo/.local/bin:$PATH
+
+# Install pip packages
+RUN set -eux && python3 -m pip install --no-cache-dir --upgrade pip
 RUN set -eux \
-    && python3 -m ensurepip \
-    # && pip3 install --no-cache --upgrade pip setuptools wheel \
-    && pip3 install --no-cache numpy pandas \
-    \
-    && export GDAL_VERSION=$(gdal-config --version); echo ${GDAL_VERSION} \
-    \
-    && pip3 install --no-cache GDAL==${GDAL_VERSION} \
-    && pip3 install --no-cache \
+    && export GDAL_VERSION=$(gdal-config --version) \
+    && python3 -m pip install --no-cache \
+        wheel \
+        numpy \
+        pandas \
+        GDAL==${GDAL_VERSION} \
         scipy \
         fiona \
         pyproj \
+        pygeos \
         shapely \
         rtree \
-		tqdm \
+        tqdm \
         geopy \
         matplotlib \
         descartes \
@@ -59,9 +88,13 @@ RUN set -eux \
         geemap \
         scikit-learn \
         seaborn \
-    && pip3 --no-cache install rasterio netCDF4 xarray zarr rioxarray
+        rasterio \
+        netCDF4 \
+        xarray \
+        zarr \
+        rioxarray
 
-# last final test
+# Test installations
 RUN set -eux \
     && gdalinfo --version \
     && python3 -c "import numpy;print(numpy.__version__)" \
@@ -69,15 +102,12 @@ RUN set -eux \
     && python3 -c "import pyproj;print(pyproj.__version__)" \
     && python3 -c "from osgeo import gdal;print(gdal.__version__)"
 
-## Setup File System
-ENV WORKDIR=/opt/notebooks
-RUN mkdir ${WORKDIR}
-ENV HOME=${WORKDIR}
-ENV SHELL=/bin/bash
-VOLUME ${WORKDIR}
-WORKDIR ${WORKDIR}
+# Switch back to root to setup the filesystem and Tini
+USER root
 
-EXPOSE 8888
+# Setup File System
+ENV WORKDIR=/notebooks
+RUN mkdir -p ${WORKDIR} && mkdir -p /data
 
 # Add Tini
 ENV TINI_VERSION v0.19.0
@@ -85,5 +115,12 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN chmod +x /tini
 ENTRYPOINT ["/tini", "--"]
 
-# this for docker. 
-CMD ["jupyter", "lab", "--ip=0.0.0.0","--NotebookApp.token=''","--NotebookApp.password=''","--allow-root"]
+# switch to geo to run application
+USER geo
+WORKDIR ${WORKDIR}
+
+# Expose JupyterLab port
+EXPOSE 8888
+
+# Default command to start JupyterLab
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--NotebookApp.token=''", "--NotebookApp.password=''"]

@@ -1,0 +1,17 @@
+*.bat
+*.cmd
+*.sh
+
+dockerfile.test
+notebooks
+./notebooks/.ipynb_checkpoints
+./notebooks/.local
+./notebooks/.jupyter
+./notebooks/.ipython
+./notebooks/.config
+./notebooks_backup
+
+src/
+src
+
+./**/**/.ipynb_checkpoints
