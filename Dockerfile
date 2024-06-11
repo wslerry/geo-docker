@@ -73,7 +73,7 @@ RUN set -eux \
         scipy \
         fiona \
         pyproj \
-        pygeos \
+        # pygeos \
         shapely \
         rtree \
         tqdm \
