@@ -14,3 +14,16 @@ services:
     volumes:
       - ./data:/data
       - ./notebooks:/notebooks
+
+  python02:
+    container_name: geodocker02
+    image: lerryws/geodocker
+    ports:
+      - 8889:8888
+    restart: always
+    environment:
+      - LANG=en_EN.UTF-8
+      - TZ=Asia/Kuching
+    volumes:
+      - ./data:/data
+      - ./notebooks02:/notebooks
